@@ -1,12 +1,14 @@
 from datetime import date, datetime
 from typing import Annotated, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func, Date
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
 from ..database import SessionLocal
 from ..models.todo import Todo, TodoCategory
 from .auth import get_current_user
-
+from ..models.user import User
+from datetime import date, datetime, timedelta
 
 router = APIRouter(
     prefix="/todos",
@@ -39,7 +41,24 @@ class TodoRequest(BaseModel):
 #Todo listeleme
 @router.get("/")
 async def read_my_todos(user: user_dependency, db:db_dependency):
-    return db.query(Todo).filter(Todo.user_id == user.get("id")).all()
+    #dünden kalan tamamlanmaış todoları genel todo listesine ekelencekşekilde ayarla
+    #is_completed false ise is daily trure dan false cevirilecek
+    user_id = user.get("id")
+    today = date.today()
+
+    unfinished_daily_tasks = db.query(Todo).filter(
+        Todo.user_id == user_id,
+        Todo.is_daily == True,
+        Todo.is_completed == False,
+        # created_at tarihini kontrol ederek dünden öncesini buluyoruz
+        func.cast(Todo.created_at, Date) < today
+    ).all()
+
+    if unfinished_daily_tasks:
+        for task in unfinished_daily_tasks:
+            task.is_daily = False
+        db.commit()
+    return db.query(Todo).filter(Todo.user_id == user._id).all()
 
 #Yeni todo olusturma
 @router.post("/create", status_code=status.HTTP_201_CREATED)
@@ -70,15 +89,31 @@ async def update_todo(user: user_dependency, db:db_dependency, todo_request: Tod
     db.add(todo_model)
     db.commit()
 
-# todo tamamlandı olarak işaretleme
+# todo tamamlandı olarak işaretleme ve streak arttırma
 @router.put("/{todo_id}/complete", status_code= status.HTTP_204_NO_CONTENT)
 async def complete_todo(user: user_dependency, db:db_dependency, todo_id:int):
     todo_model = db.query(Todo).filter(Todo.id == todo_id).filter(Todo.user_id == user.get("id")).first()
     if todo_model is None:
         raise HTTPException(status_code=404, detail="Todo bulunamadı")
-
+    if todo_model.is_completed:
+        return
     todo_model.is_completed = True
     db.add(todo_model)
+    #streak mantığı (günde min 1 görev)
+    user_model =db.query(User).filter(User.id == user.get("id")).first()
+    today = date.today()
+    yesterday = today - timedelta(days=1)
+
+    if user_model.last_active_date != today:
+
+        # --- EĞER DÜN YAPMADIYSA SERİYİ 1'DEN BAŞLAT ---
+        if user_model.last_active_date != yesterday and user_model.last_active_date is not None:
+            user_model.current_streak = 1
+        else:
+            # Dün yapmıştı veya yeni kullanıcı, o yüzden seriyi artırıyoruz
+            user_model.current_streak += 1
+        user_model.last_active_date = today
+        db.add(user_model)
     db.commit()
 
 # Todo Silme

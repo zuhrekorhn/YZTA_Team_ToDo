@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Date
 from sqlalchemy.orm import relationship
 from ..database import Base
 
@@ -18,3 +18,4 @@ class User(Base):
     #ilişkiler
     todos = relationship("Todo", back_populates = "owner")
     reactions = relationship("Reaction", back_populates = "user")
+    last_active_date = Column(Date, default=None, nullable=True) #streak için kullanıcının en son ne zamn aktif olduğunu bilmemiz sağlar
