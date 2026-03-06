@@ -49,7 +49,7 @@ const SocialFeed = () => {
         { code: "👍", label: "Beğen", icon: ThumbsUp, color: "text-blue-500 bg-blue-50" },
         { code: "❤️", label: "Sevdim", icon: Heart, color: "text-red-500 bg-red-50" },
         { code: "⭐", label: "Süper", icon: Star, color: "text-yellow-500 bg-yellow-50" },
-        { code: "⚡", label: "Hızlı", icon: CloudLightning, color: "text-purple-500 bg-purple-50" },
+        { code: "⚡", label: "Hızlı", icon: CloudLightning, color: "text-green-600 bg-green-50" },
     ];
 
     if (loading) {
@@ -72,7 +72,7 @@ const SocialFeed = () => {
                     />
                 ))}
                 {feed.length === 0 && (
-                    <div className="col-span-3 text-center py-10 text-gray-500 bg-white rounded-xl shadow-sm">
+                    <div className="col-span-3 text-center py-10 text-gray-500 bg-white rounded-xl shadow-sm dark:bg-gray-900 dark:text-gray-400 dark:border dark:border-gray-800">
                         Henüz takip ettiğin kimse yok veya arkadaşların bugünlük bir şey paylaşmamış.
                     </div>
                 )}
@@ -80,35 +80,35 @@ const SocialFeed = () => {
 
             {/* Todo Detay ve Reaksiyon Modalı */}
             {selectedTodo && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative animate-in fade-in zoom-in duration-200">
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm dark:bg-black/70">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative animate-in fade-in zoom-in duration-200 dark:bg-gray-900 dark:border dark:border-gray-800">
                         <button 
                             onClick={() => setSelectedTodo(null)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-full transition"
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-full transition dark:hover:bg-gray-800 dark:hover:text-gray-300"
                         >
                             <X size={24} />
                         </button>
                         
                         <div className="mb-6">
-                            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded mb-2 inline-block">
+                            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded mb-2 inline-block dark:bg-blue-900/20 dark:text-blue-400">
                                 {selectedTodo.category.toUpperCase()}
                             </span>
-                            <h3 className="text-xl font-bold text-gray-800 mb-2">
+                            <h3 className="text-xl font-bold text-gray-800 mb-2 dark:text-gray-100">
                                 {selectedTodo.title}
                             </h3>
                             {selectedTodo.description ? (
-                                <p className="text-gray-600 text-sm leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                <p className="text-gray-600 text-sm leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300">
                                     {selectedTodo.description}
                                 </p>
                             ) : (
-                                <p className="text-gray-400 text-sm italic">
+                                <p className="text-gray-400 text-sm italic dark:text-gray-500">
                                     Açıklama girilmemiş.
                                 </p>
                             )}
                         </div>
 
-                        <div className="border-t border-gray-100 pt-4">
-                            <label className="text-xs font-bold text-gray-400 uppercase mb-3 block text-center">
+                        <div className="border-t border-gray-100 pt-4 dark:border-gray-800">
+                            <label className="text-xs font-bold text-gray-400 uppercase mb-3 block text-center dark:text-gray-500">
                                 Bir Tepki Bırak
                             </label>
                             <div className="flex justify-between gap-2">
@@ -116,7 +116,7 @@ const SocialFeed = () => {
                                     <button
                                         key={option.code}
                                         onClick={() => handleReaction(option.code)}
-                                        className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:scale-110 active:scale-95 ${option.color} w-full`}
+                                        className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:scale-110 active:scale-95 ${option.color} w-full dark:bg-opacity-10 dark:text-opacity-90`}
                                         title={option.label}
                                     >
                                         <span className="text-xl">{option.code}</span>

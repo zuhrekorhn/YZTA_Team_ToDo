@@ -225,7 +225,7 @@ const Profile = ({ targetUserId }) => {
         { code: "👍", label: "Beğen", icon: ThumbsUp, color: "text-blue-500 bg-blue-50" },
         { code: "❤️", label: "Sevdim", icon: Heart, color: "text-red-500 bg-red-50" },
         { code: "⭐", label: "Süper", icon: Star, color: "text-yellow-500 bg-yellow-50" },
-        { code: "⚡", label: "Hızlı", icon: CloudLightning, color: "text-purple-500 bg-purple-50" },
+        { code: "⚡", label: "Hızlı", icon: CloudLightning, color: "text-green-600 bg-green-50" },
     ];
 
     const groupReactions = (reactions) => {
@@ -268,45 +268,47 @@ const Profile = ({ targetUserId }) => {
         <div 
             onClick={() => handleTodoClick(todo)}
             className={`flex items-center justify-between p-4 mb-3 rounded-xl border transition-all group cursor-pointer ${
-                todo.is_completed ? 'bg-gray-50 border-gray-100 opacity-60' : 'bg-white border-gray-200 hover:border-blue-300 shadow-sm'
+                todo.is_completed 
+                ? 'bg-gray-50 border-gray-100 opacity-60 dark:bg-gray-800/50 dark:border-gray-800' 
+                : 'bg-white border-gray-200 hover:border-blue-300 shadow-sm dark:bg-gray-900 dark:border-gray-700 dark:hover:border-blue-700'
             }`}
         >
             <div className="flex items-center gap-4">
                 <button 
                     onClick={(e) => { e.stopPropagation(); isOwner && handleComplete(todo.id, todo.is_completed); }}
-                    className={`transition-colors flex-shrink-0 ${todo.is_completed ? 'text-green-500' : (isOwner ? 'text-gray-300 hover:text-green-500' : 'text-gray-300 cursor-default')}`}
+                    className={`transition-colors flex-shrink-0 ${todo.is_completed ? 'text-green-500 dark:text-green-400' : (isOwner ? 'text-gray-300 hover:text-green-500 dark:text-gray-600 dark:hover:text-green-400' : 'text-gray-300 cursor-default dark:text-gray-600')}`}
                     disabled={!isOwner}
                 >
                     {todo.is_completed ? <CheckCircle className="w-6 h-6" /> : <Circle className="w-6 h-6" />}
                 </button>
                 
                 <div>
-                    <p className={`font-semibold ${todo.is_completed ? 'line-through text-gray-400' : 'text-gray-800'}`}>
+                    <p className={`font-semibold ${todo.is_completed ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-800 dark:text-gray-200'}`}>
                         {todo.title}
                     </p>
                     {/* Açıklama varsa göster (küçük) */}
-                    {todo.description && <p className="text-xs text-gray-400 truncate max-w-xs">{todo.description}</p>}
+                    {todo.description && <p className="text-xs text-gray-400 truncate max-w-xs dark:text-gray-500">{todo.description}</p>}
                     
                     <div className="flex gap-2 text-xs mt-1">
-                        <span className="px-2 py-0.5 bg-gray-100 rounded text-gray-500">{todo.category}</span>
+                        <span className="px-2 py-0.5 bg-gray-100 rounded text-gray-500 dark:bg-gray-800 dark:text-gray-400">{todo.category}</span>
                         {/* Öncelik Badge */}
                         <span className={`px-2 py-0.5 rounded ${
-                            todo.priority === 'Yüksek' ? 'bg-red-100 text-red-600' :
-                            todo.priority === 'Düşük' ? 'bg-green-100 text-green-600' : 
-                            'bg-orange-100 text-orange-600'
+                            todo.priority === 'Yüksek' ? 'bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400' :
+                            todo.priority === 'Düşük' ? 'bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400' : 
+                            'bg-orange-100 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400'
                         }`}>
                             {todo.priority}
                         </span>
                         {/* Tarih varsa */}
                         {todo.due_date && (
-                            <span className="flex items-center gap-1 text-gray-400">
+                            <span className="flex items-center gap-1 text-gray-400 dark:text-gray-500">
                                 <Clock size={12} /> {new Date(todo.due_date).toLocaleDateString('tr-TR')}
                             </span>
                         )}
                         {/* Public/Private Indicator ve Reaksiyonlar */}
                         <div className="flex items-center gap-2">
                              {todo.is_public !== undefined && (
-                                <span className="text-gray-400">
+                                <span className="text-gray-400 dark:text-gray-600">
                                     {todo.is_public ? <Globe size={12} /> : <Lock size={12} />}
                                 </span>
                             )}
@@ -317,12 +319,12 @@ const Profile = ({ targetUserId }) => {
                                     {groupReactions(todo.reactions).map((group, idx) => (
                                         <div 
                                             key={idx}
-                                            className="flex items-center gap-0.5 bg-gray-50 border border-gray-200 rounded-full px-1.5 py-0.5"
+                                            className="flex items-center gap-0.5 bg-gray-50 border border-gray-200 rounded-full px-1.5 py-0.5 dark:bg-gray-800 dark:border-gray-700"
                                             title={`${group.count} kişi`}
                                         >
                                             <span className="text-[10px] leading-none">{group.code}</span>
                                             {group.count > 1 && (
-                                                <span className="text-[9px] font-bold text-gray-500">
+                                                <span className="text-[9px] font-bold text-gray-500 dark:text-gray-400">
                                                     {group.count}
                                                 </span>
                                             )}
@@ -341,8 +343,8 @@ const Profile = ({ targetUserId }) => {
                         onClick={() => toggleDailyStatus(todo.id, todo.is_daily)}
                         className={`p-2 rounded-lg transition-colors ${
                             listType === 'daily' 
-                            ? 'text-gray-400 hover:text-orange-600 hover:bg-orange-50' 
-                            : 'text-gray-400 hover:text-blue-600 hover:bg-blue-50'
+                            ? 'text-gray-400 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 dark:hover:text-orange-400' 
+                            : 'text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 dark:hover:text-blue-400'
                         }`}
                         title={listType === 'daily' ? "Backlog'a Geri Gönder" : "Bugünün Yapılacaklarına Ekle (Sprint)"}
                     >
@@ -351,7 +353,7 @@ const Profile = ({ targetUserId }) => {
 
                     <button 
                         onClick={() => handleDelete(todo.id)}
-                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors dark:hover:bg-red-900/20 dark:hover:text-red-400"
                     >
                         <Trash2 size={18} />
                     </button>
@@ -367,28 +369,28 @@ const Profile = ({ targetUserId }) => {
                 
                 {/* Ziyaretçi Modu Uyarısı */}
                 {!isOwner && (
-                     <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-center gap-3 text-blue-800 text-sm shadow-sm">
+                     <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-center gap-3 text-blue-800 text-sm shadow-sm dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300">
                         <Shield className="w-5 h-5" />
                         <span className="font-semibold">{user?.username} profiline bakıyorsun.</span>
                      </div>
                 )}
 
                 {/* User Info */}
-                <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 text-center sticky top-24">
-                    <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto flex items-center justify-center text-4xl text-white font-bold mb-4 shadow-xl">
+                <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 text-center sticky top-24 dark:bg-gray-900 dark:border-gray-800">
+                    <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full mx-auto flex items-center justify-center text-4xl text-white font-bold mb-4 shadow-xl">
                         {user?.username?.charAt(0).toUpperCase()}
                     </div>
-                    <h2 className="text-xl font-bold text-gray-800">{user?.username}</h2>
-                    <p className="text-gray-500 text-sm">{user?.email}</p>
+                    <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{user?.username}</h2>
+                    <p className="text-gray-500 text-sm dark:text-gray-400">{user?.email}</p>
                     
-                    <div className="flex items-center justify-center gap-2 mt-4 bg-orange-50 py-2 rounded-lg text-orange-600 font-bold border border-orange-100">
-                        <Flame className="fill-orange-500" />
+                    <div className="flex items-center justify-center gap-2 mt-4 bg-orange-50 py-2 rounded-lg text-orange-600 font-bold border border-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-900/30">
+                        <Flame className="fill-orange-500 dark:text-orange-500" />
                         <span>{user?.current_streak} Günlük Seri</span>
                     </div>
 
                     {/* Sıralama Kartı */}
                     {stats?.summary?.rank > 0 && (
-                        <div className="flex items-center justify-center gap-2 mt-2 bg-yellow-50 py-2 rounded-lg text-yellow-700 font-bold border border-yellow-100 shadow-sm">
+                        <div className="flex items-center justify-center gap-2 mt-2 bg-yellow-50 py-2 rounded-lg text-yellow-700 font-bold border border-yellow-100 shadow-sm dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-900/30">
                             <span className="text-lg">🏆</span>
                             <span>Sıralama: #{stats.summary.rank}</span>
                         </div>
@@ -396,7 +398,7 @@ const Profile = ({ targetUserId }) => {
 
                     {/* Mood Selector */}
                     <div className="mt-8 text-left">
-                         <label className="text-xs font-bold text-gray-400 uppercase mb-3 block tracking-wide flex items-center gap-2">
+                         <label className="text-xs font-bold text-gray-400 uppercase mb-3 block tracking-wide flex items-center gap-2 dark:text-gray-500">
                              <Smile size={14} /> Bugünün Modu
                          </label>
                         <div className="flex flex-wrap gap-2">
@@ -408,8 +410,8 @@ const Profile = ({ targetUserId }) => {
                                     disabled={!isOwner}
                                     className={`text-xs px-3 py-1.5 rounded-full border transition-all ${
                                         mood === m 
-                                        ? 'bg-blue-600 border-blue-600 text-white shadow-md transform scale-105' 
-                                        : (isOwner ? 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50' : 'bg-gray-50 border-gray-100 text-gray-400 cursor-default')
+                                        ? 'bg-blue-600 border-blue-600 text-white shadow-md transform scale-105 dark:bg-blue-500' 
+                                        : (isOwner ? 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700' : 'bg-gray-50 border-gray-100 text-gray-400 cursor-default dark:bg-gray-900/50 dark:border-gray-800 dark:text-gray-600')
                                     }`}
                                 >
                                     {m}
@@ -420,24 +422,24 @@ const Profile = ({ targetUserId }) => {
 
                     {/* İstatistikler */}
                     {stats && (
-                        <div className="mt-8 text-left border-t border-gray-100 pt-6">
+                        <div className="mt-8 text-left border-t border-gray-100 pt-6 dark:border-gray-800">
 
-                            <label className="text-xs font-bold text-gray-400 uppercase mb-3 block tracking-wide flex items-center gap-2">
+                            <label className="text-xs font-bold text-gray-400 uppercase mb-3 block tracking-wide flex items-center gap-2 dark:text-gray-500">
                                 <PieChart size={14} /> Kategori Bazlı Tamamlanan
                             </label>
                             
                             {/* Genel İstatistik Kartı */}
-                            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl mb-4 border border-blue-100">
+                            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl mb-4 border border-blue-100 dark:from-blue-900/20 dark:to-indigo-900/20 dark:border-blue-800">
                                 <div className="flex justify-between items-center mb-1">
-                                    <span className="text-gray-600 text-xs font-semibold flex items-center gap-1">
-                                        <TrendingUp size={12} className="text-green-500"/> Genel başarı
+                                    <span className="text-gray-600 text-xs font-semibold flex items-center gap-1 dark:text-gray-300">
+                                        <TrendingUp size={12} className="text-green-500 dark:text-green-400"/> Genel başarı
                                     </span>
-                                    <span className="text-blue-700 font-bold text-sm">%{Math.round(stats.summary.completion_rate)}</span>
+                                    <span className="text-blue-700 font-bold text-sm dark:text-blue-400">%{Math.round(stats.summary.completion_rate)}</span>
                                 </div>
-                                <div className="w-full bg-blue-200 rounded-full h-1.5 ">
-                                    <div className="bg-blue-600 h-1.5 rounded-full transition-all duration-500" style={{width: `${stats.summary.completion_rate}%`}}></div>
+                                <div className="w-full bg-blue-200 rounded-full h-1.5 dark:bg-blue-900/40">
+                                    <div className="bg-blue-600 h-1.5 rounded-full transition-all duration-500 dark:bg-blue-500" style={{width: `${stats.summary.completion_rate}%`}}></div>
                                 </div>
-                                <div className="mt-2 text-xs text-gray-500 flex justify-between">
+                                <div className="mt-2 text-xs text-gray-500 flex justify-between dark:text-gray-400">
                                     <span>Tamamlanan: {stats.summary.completed}</span>
                                     <span>Toplam: {stats.summary.total}</span>
                                 </div>
@@ -460,15 +462,15 @@ const Profile = ({ targetUserId }) => {
                                    return (
                                         <div key={cat} className="group">
                                             <div className="flex justify-between items-end mb-1">
-                                                <span className="text-xs font-semibold text-gray-600 capitalize flex items-center gap-2">
+                                                <span className="text-xs font-semibold text-gray-600 capitalize flex items-center gap-2 dark:text-gray-300">
                                                     <span className={`w-2 h-2 rounded-full ${barColor}`}></span>
                                                     {cat}
                                                 </span>
-                                                <span className="text-xs text-gray-500 font-medium">
-                                                    {count} Görev <span className="text-gray-300 text-[10px]">({percentage}%)</span>
+                                                <span className="text-xs text-gray-500 font-medium dark:text-gray-400">
+                                                    {count} Görev <span className="text-gray-300 text-[10px] dark:text-gray-600">({percentage}%)</span>
                                                 </span>
                                             </div>
-                                            <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                            <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden dark:bg-gray-800">
                                                 <div 
                                                     className={`h-full rounded-full transition-all duration-500 ${barColor}`} 
                                                     style={{width: `${percentage}%`}}
@@ -492,9 +494,9 @@ const Profile = ({ targetUserId }) => {
                 
                 {/* 1. Kapsamlı Görev Ekleme Formu - Sadece Profil Sahibi Görebilir */}
                 {isOwner && (
-                    <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-                        <h3 className="font-bold text-lg text-gray-800 mb-4 flex items-center gap-2">
-                            <Plus className="bg-blue-100 text-blue-600 rounded p-1 w-6 h-6" />
+                    <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 dark:bg-gray-900 dark:border-gray-800">
+                        <h3 className="font-bold text-lg text-gray-800 mb-4 flex items-center gap-2 dark:text-gray-100">
+                            <Plus className="bg-blue-100 text-blue-600 rounded p-1 w-6 h-6 dark:bg-blue-900/20 dark:text-blue-400" />
                             Yeni Hedef Ekle
                         </h3>
                         <form onSubmit={handleAddTodo} className="space-y-4">
@@ -503,7 +505,7 @@ const Profile = ({ targetUserId }) => {
                                 <input 
                                     type="text" 
                                     placeholder="Ne yapmayı planlıyorsun?" 
-                                    className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-medium"
+                                    className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-medium dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:ring-blue-900"
                                     value={newTodoTitle}
                                     onChange={(e) => setNewTodoTitle(e.target.value)}
                                     required
@@ -512,10 +514,10 @@ const Profile = ({ targetUserId }) => {
 
                             {/* Detay / Açıklama */}
                             <div className="relative">
-                                <AlignLeft className="absolute top-3 left-3 text-gray-400 w-5 h-5" />
+                                <AlignLeft className="absolute top-3 left-3 text-gray-400 w-5 h-5 dark:text-gray-500" />
                                 <textarea 
                                     placeholder="Gerekirse detay ekle..." 
-                                    className="w-full p-3 pl-10 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-sm min-h-[80px]"
+                                    className="w-full p-3 pl-10 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-sm min-h-[80px] dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:ring-blue-900"
                                     value={newTodoDescription}
                                     onChange={(e) => setNewTodoDescription(e.target.value)}
                                 />
@@ -525,11 +527,11 @@ const Profile = ({ targetUserId }) => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                                 {/* Kategori */}
                                 <div className="flex flex-col gap-1">
-                                    <label className="text-xs text-gray-500 font-semibold">Kategori</label>
+                                    <label className="text-xs text-gray-500 font-semibold dark:text-gray-400">Kategori</label>
                                     <select 
                                         value={newTodoCategory}
                                         onChange={(e) => setNewTodoCategory(e.target.value)}
-                                        className="p-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none w-full"
+                                        className="p-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none w-full dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
                                     >
                                         {categories.map(cat => <option key={cat.value} value={cat.value}>{cat.label}</option>)}
                                     </select>
@@ -537,11 +539,11 @@ const Profile = ({ targetUserId }) => {
 
                                 {/* Öncelik */}
                                 <div className="flex flex-col gap-1">
-                                    <label className="text-xs text-gray-500 font-semibold">Öncelik</label>
+                                    <label className="text-xs text-gray-500 font-semibold dark:text-gray-400">Öncelik</label>
                                     <select 
                                         value={newTodoPriority}
                                         onChange={(e) => setNewTodoPriority(e.target.value)}
-                                        className="p-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none w-full"
+                                        className="p-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none w-full dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
                                     >
                                         {priorities.map(p => <option key={p} value={p}>{p}</option>)}
                                     </select>
@@ -549,35 +551,35 @@ const Profile = ({ targetUserId }) => {
 
                                 {/* Tarih */}
                                 <div className="flex flex-col gap-1 sm:col-span-2">
-                                    <label className="text-xs text-gray-500 font-semibold">Bitiş Tarihi (Opsiyonel)</label>
+                                    <label className="text-xs text-gray-500 font-semibold dark:text-gray-400">Bitiş Tarihi (Opsiyonel)</label>
                                     <input 
                                         type="date"
                                         value={newTodoDueDate}
                                         onChange={(e) => setNewTodoDueDate(e.target.value)}
-                                        className="p-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none w-full text-gray-600"
+                                        className="p-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none w-full text-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
                                     />
                                 </div>
                             </div>
 
                             {/* Checkboxlar ve Buton */}
-                            <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-4">
+                            <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-4 dark:border-gray-800">
                             <div className="flex gap-6">
-                                    <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+                                    <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none dark:text-gray-300">
                                         <input 
                                             type="checkbox" 
                                             checked={isDaily} 
                                             onChange={(e) => setIsDaily(e.target.checked)}
-                                            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
+                                            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:checked:bg-blue-600"
                                         />
                                         <span>Günlük Yapılacaklar</span>
                                     </label>
 
-                                    <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+                                    <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none dark:text-gray-300">
                                         <input 
                                             type="checkbox" 
                                             checked={isPublic} 
                                             onChange={(e) => setIsPublic(e.target.checked)}
-                                            className="w-4 h-4 text-green-600 rounded focus:ring-green-500 border-gray-300"
+                                            className="w-4 h-4 text-green-600 rounded focus:ring-green-500 border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:checked:bg-green-600"
                                         />
                                         <span>Herkese Açık (Public)</span>
                                     </label>
@@ -585,7 +587,7 @@ const Profile = ({ targetUserId }) => {
 
                                 <button 
                                     type="submit" 
-                                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition shadow-md hover:shadow-lg"
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition shadow-md hover:shadow-lg dark:bg-blue-700 dark:hover:bg-blue-600"
                                 >
                                     Oluştur
                                 </button>
@@ -595,17 +597,17 @@ const Profile = ({ targetUserId }) => {
                 )}
 
                 {/* 2. Günlük Sprint Listesi */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="p-4 bg-blue-50/50 border-b border-blue-100 flex justify-between items-center">
-                        <h3 className="font-bold text-gray-800 flex items-center gap-2">
-                            <Clock className="text-blue-600 w-5 h-5"/>
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden dark:bg-gray-900 dark:border-gray-800">
+                    <div className="p-4 bg-blue-50/50 border-b border-blue-100 flex justify-between items-center dark:bg-blue-900/10 dark:border-blue-800">
+                        <h3 className="font-bold text-gray-800 flex items-center gap-2 dark:text-gray-100">
+                            <Clock className="text-blue-600 w-5 h-5 dark:text-blue-400"/>
                             Günlük Yapılacaklar
                         </h3>
-                        <span className="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-full">{dailyTodos.length}</span>
+                        <span className="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-full dark:bg-blue-900 dark:text-blue-300">{dailyTodos.length}</span>
                     </div>
                     <div className="p-4">
                         {dailyTodos.length === 0 ? (
-                             <p className="text-gray-400 text-center text-sm py-4 italic">Bugün için henüz bir planın yok.</p>
+                             <p className="text-gray-400 text-center text-sm py-4 italic dark:text-gray-500">Bugün için henüz bir planın yok.</p>
                         ) : (
                             dailyTodos.map(todo => <TodoItem key={todo.id} todo={todo} listType="daily" />)
                         )}
@@ -613,17 +615,17 @@ const Profile = ({ targetUserId }) => {
                 </div>
 
                 {/* 3. Genel Backlog Listesi */}
-                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
-                        <h3 className="font-bold text-gray-700 flex items-center gap-2">
-                             <Calendar className="text-gray-500 w-5 h-5"/>
+                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden dark:bg-gray-900 dark:border-gray-800">
+                    <div className="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center dark:bg-gray-800 dark:border-gray-700">
+                        <h3 className="font-bold text-gray-700 flex items-center gap-2 dark:text-gray-200">
+                             <Calendar className="text-gray-500 w-5 h-5 dark:text-gray-400"/>
                              Genel Yapılacaklar
                         </h3>
-                        <span className="bg-gray-200 text-gray-600 text-xs font-bold px-2 py-1 rounded-full">{backlogTodos.length}</span>
+                        <span className="bg-gray-200 text-gray-600 text-xs font-bold px-2 py-1 rounded-full dark:bg-gray-700 dark:text-gray-300">{backlogTodos.length}</span>
                     </div>
                     <div className="p-4">
                         {backlogTodos.length === 0 ? (
-                             <p className="text-gray-400 text-center text-sm py-4 italic">Backlog tertemiz!</p>
+                             <p className="text-gray-400 text-center text-sm py-4 italic dark:text-gray-500">Backlog tertemiz!</p>
                         ) : (
                             backlogTodos.map(todo => <TodoItem key={todo.id} todo={todo} listType="backlog" />)
                         )}
@@ -634,25 +636,25 @@ const Profile = ({ targetUserId }) => {
 
             {/* Edit Modal */}
             {selectedTodo && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 relative animate-in fade-in zoom-in duration-200">
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm dark:bg-black/70">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 relative animate-in fade-in zoom-in duration-200 dark:bg-gray-900 dark:border dark:border-gray-700">
                         <button 
                             onClick={() => setSelectedTodo(null)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-full transition"
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-full transition dark:hover:bg-gray-800 dark:hover:text-gray-200"
                         >
                             <X size={24} />
                         </button>
                         
-                        <h3 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
-                             Güncelle: <span className="text-blue-600 truncate max-w-[200px]">{selectedTodo.title}</span>
+                        <h3 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2 dark:text-gray-100">
+                             Güncelle: <span className="text-blue-600 truncate max-w-[200px] dark:text-blue-400">{selectedTodo.title}</span>
                         </h3>
                         
                         <form onSubmit={handleUpdateSubmit} className="space-y-4">
                              <div>
-                                <label className="text-xs text-gray-500 font-semibold mb-1 block">Başlık</label>
+                                <label className="text-xs text-gray-500 font-semibold mb-1 block dark:text-gray-400">Başlık</label>
                                 <input 
                                     type="text" 
-                                    className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-medium"
+                                    className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-medium dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:ring-blue-900"
                                     value={editFormData.title}
                                     onChange={(e) => setEditFormData({...editFormData, title: e.target.value})}
                                     required
@@ -660,9 +662,9 @@ const Profile = ({ targetUserId }) => {
                             </div>
 
                             <div>
-                                <label className="text-xs text-gray-500 font-semibold mb-1 block">Açıklama</label>
+                                <label className="text-xs text-gray-500 font-semibold mb-1 block dark:text-gray-400">Açıklama</label>
                                 <textarea 
-                                    className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-sm min-h-[80px]"
+                                    className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-sm min-h-[80px] dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:ring-blue-900"
                                     value={editFormData.description}
                                     onChange={(e) => setEditFormData({...editFormData, description: e.target.value})}
                                 />
@@ -670,22 +672,22 @@ const Profile = ({ targetUserId }) => {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="flex flex-col gap-1">
-                                    <label className="text-xs text-gray-500 font-semibold">Kategori</label>
+                                    <label className="text-xs text-gray-500 font-semibold dark:text-gray-400">Kategori</label>
                                     <select 
                                         value={editFormData.category}
                                         onChange={(e) => setEditFormData({...editFormData, category: e.target.value})}
-                                        className="p-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none w-full"
+                                        className="p-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none w-full dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
                                     >
                                         {categories.map(cat => <option key={cat.value} value={cat.value}>{cat.label}</option>)}
                                     </select>
                                 </div>
 
                                 <div className="flex flex-col gap-1">
-                                    <label className="text-xs text-gray-500 font-semibold">Öncelik</label>
+                                    <label className="text-xs text-gray-500 font-semibold dark:text-gray-400">Öncelik</label>
                                     <select 
                                         value={editFormData.priority}
                                         onChange={(e) => setEditFormData({...editFormData, priority: e.target.value})}
-                                        className="p-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none w-full"
+                                        className="p-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none w-full dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
                                     >
                                         {priorities.map(p => <option key={p} value={p}>{p}</option>)}
                                     </select>
@@ -693,32 +695,32 @@ const Profile = ({ targetUserId }) => {
                             </div>
                             
                             <div className="flex flex-col gap-1">
-                                <label className="text-xs text-gray-500 font-semibold">Bitiş Tarihi</label>
+                                <label className="text-xs text-gray-500 font-semibold dark:text-gray-400">Bitiş Tarihi</label>
                                 <input 
                                     type="date"
                                     value={editFormData.due_date}
                                     onChange={(e) => setEditFormData({...editFormData, due_date: e.target.value})}
-                                    className="p-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none w-full text-gray-600"
+                                    className="p-2 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none w-full text-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
                                 />
                             </div>
 
-                            <div className="flex flex-col gap-3 pt-4 border-t border-gray-100">
-                                <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+                            <div className="flex flex-col gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
+                                <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none dark:text-gray-300">
                                     <input 
                                         type="checkbox" 
                                         checked={editFormData.is_daily} 
                                         onChange={(e) => setEditFormData({...editFormData, is_daily: e.target.checked})}
-                                        className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
+                                        className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:checked:bg-blue-600"
                                     />
                                     <span>Günlük Yapılacaklar Listesinde</span>
                                 </label>
 
-                                <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+                                <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none dark:text-gray-300">
                                     <input 
                                         type="checkbox" 
                                         checked={editFormData.is_public} 
                                         onChange={(e) => setEditFormData({...editFormData, is_public: e.target.checked})}
-                                        className="w-4 h-4 text-green-600 rounded focus:ring-green-500 border-gray-300"
+                                        className="w-4 h-4 text-green-600 rounded focus:ring-green-500 border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:checked:bg-green-600"
                                     />
                                     <span>Herkese Açık (Public)</span>
                                 </label>
@@ -728,13 +730,13 @@ const Profile = ({ targetUserId }) => {
                                 <button 
                                     type="button" 
                                     onClick={() => setSelectedTodo(null)}
-                                    className="px-4 py-2 text-gray-500 hover:bg-gray-100 rounded-lg font-medium text-sm transition"
+                                    className="px-4 py-2 text-gray-500 hover:bg-gray-100 rounded-lg font-medium text-sm transition dark:text-gray-400 dark:hover:bg-gray-800"
                                 >
                                     Vazgeç
                                 </button>
                                 <button 
                                     type="submit" 
-                                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold text-sm transition shadow-md hover:shadow-lg"
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold text-sm transition shadow-md hover:shadow-lg dark:bg-blue-700 dark:hover:bg-blue-600"
                                 >
                                     Değişiklikleri Kaydet
                                 </button>
@@ -746,35 +748,35 @@ const Profile = ({ targetUserId }) => {
 
             {/* View/React Modal (Visitor Only) */}
             {viewTodo && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative animate-in fade-in zoom-in duration-200">
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm dark:bg-black/70">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative animate-in fade-in zoom-in duration-200 dark:bg-gray-900 dark:border dark:border-gray-700">
                         <button 
                             onClick={() => setViewTodo(null)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-full transition"
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-full transition dark:hover:bg-gray-800 dark:hover:text-gray-200"
                         >
                             <X size={24} />
                         </button>
                         
                         <div className="mb-6">
-                            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded mb-2 inline-block">
+                            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded mb-2 inline-block dark:bg-blue-900/20 dark:text-blue-400">
                                 {viewTodo.category.toUpperCase()}
                             </span>
-                            <h3 className="text-xl font-bold text-gray-800 mb-2">
+                            <h3 className="text-xl font-bold text-gray-800 mb-2 dark:text-gray-100">
                                 {viewTodo.title}
                             </h3>
                             {viewTodo.description ? (
-                                <p className="text-gray-600 text-sm leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                <p className="text-gray-600 text-sm leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300">
                                     {viewTodo.description}
                                 </p>
                             ) : (
-                                <p className="text-gray-400 text-sm italic">
+                                <p className="text-gray-400 text-sm italic dark:text-gray-500">
                                     Açıklama girilmemiş.
                                 </p>
                             )}
                         </div>
 
-                        <div className="border-t border-gray-100 pt-4">
-                            <label className="text-xs font-bold text-gray-400 uppercase mb-3 block text-center">
+                        <div className="border-t border-gray-100 pt-4 dark:border-gray-800">
+                            <label className="text-xs font-bold text-gray-400 uppercase mb-3 block text-center dark:text-gray-500">
                                 Bir Tepki Bırak
                             </label>
                             <div className="flex justify-between gap-2">
@@ -782,7 +784,7 @@ const Profile = ({ targetUserId }) => {
                                     <button
                                         key={option.code}
                                         onClick={() => handleReaction(option.code)}
-                                        className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:scale-110 active:scale-95 ${option.color} w-full`}
+                                        className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:scale-110 active:scale-95 ${option.color} w-full dark:bg-opacity-10 dark:text-opacity-90`}
                                         title={option.label}
                                     >
                                         <span className="text-xl">{option.code}</span>

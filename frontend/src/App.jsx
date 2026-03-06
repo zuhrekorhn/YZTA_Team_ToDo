@@ -48,7 +48,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-900 pb-20">
+    <div className="min-h-screen bg-gray-50 font-sans text-gray-900 pb-20 dark:bg-gray-950 dark:text-gray-100">
       <Navbar onLogout={handleLogout} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -56,16 +56,16 @@ function App() {
         {view === 'home' ? (
             <>
                 {totalCompleted > 0 && (
-                    <div className="bg-white border-l-4 border-indigo-500 shadow-sm rounded-r-xl p-4 mb-6 flex items-center justify-between transition-all hover:shadow-md">
+                    <div className="bg-white border-l-4 border-green-500 shadow-sm rounded-r-xl p-4 mb-6 flex items-center justify-between transition-all hover:shadow-md dark:bg-gray-900 dark:border-green-600">
                         <div className="flex items-center gap-3">
-                            <div className="bg-indigo-50 p-2 rounded-lg">
-                                <CheckCircle2 className="text-indigo-600 h-6 w-6" />
+                            <div className="bg-green-50 p-2 rounded-lg dark:bg-green-900/20">
+                                <CheckCircle2 className="text-green-600 h-6 w-6 dark:text-green-400" />
                             </div>
                             <div>
-                                <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                                    {totalCompleted} <span className="text-sm font-normal text-gray-500">Görev Tamamlandı</span>
+                                <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2 dark:text-gray-100">
+                                    {totalCompleted} <span className="text-sm font-normal text-gray-500 dark:text-gray-400">Görev Tamamlandı</span>
                                 </h2>
-                                <p className="text-xs text-gray-400">Topluluk olarak harika gidiyoruz!</p>
+                                <p className="text-xs text-gray-400 dark:text-gray-500">Topluluk olarak harika gidiyoruz!</p>
                             </div>
                         </div>
                     </div>
@@ -78,7 +78,7 @@ function App() {
                     
                     <section>
                         <div className="flex items-center justify-center mb-6">
-                            <div className="bg-white px-6 py-2 rounded-full shadow-sm text-sm text-gray-500 border border-gray-100">
+                            <div className="bg-white px-6 py-2 rounded-full shadow-sm text-sm text-gray-500 border border-gray-100 dark:bg-gray-900 dark:border-gray-800 dark:text-gray-400">
                                  Arkadaşların bugün neler yapıyor?
                             </div>
                         </div>
