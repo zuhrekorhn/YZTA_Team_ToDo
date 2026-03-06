@@ -40,19 +40,25 @@ async def get_social_feed(user: user_dependency, db: db_dependency):
         ).all()
         todos_with_reactions =[]
         for todo in public_todos: #her bir göreve verilmiş tepkileri çek
-            reactions = db.query(Reaction).filter(Reaction.todo_id == todo.id).all()
+            reactions = db.query(Reaction.emoji_code, User.username).join(User, Reaction.user_id == User.id).filter(Reaction.todo_id == todo.id).all()
+            
+            # Reaksiyonları kullanıcı adlarıyla birlikte al
+            formatted_reactions = [{"code": r[0], "username": r[1]} for r in reactions]
+
             #görevi tepkileri birleştiriyoruz
             todos_with_reactions.append({
                 "id": todo.id,
                 "title": todo.title,
                 "description": todo.description,
                 "category": todo.category,
+                "priority": todo.priority,
                 "is_completed": todo.is_completed,
-                "reactions": reactions #göreve gelen tüm emojiler burada
+                "reactions": formatted_reactions # Artık dizi içinde nesneler var: {"code": "🔥", "username": "ali"} hem emojiyi hem kimin yazdığını tutuyor
             })
 
     #eğer kullanıcın gösterilecek todoları varsa listeye ekle
         result.append({
+            "id": other_user.id,
             "username": other_user.username,
             "daily_mood": other_user.daily_mood,
             "streak": other_user.current_streak,

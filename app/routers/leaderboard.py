@@ -26,7 +26,7 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
 @router.get("/")
 async def get_top_users(db: db_dependency, user: user_dependency):
     #en yüksek streake sahip ilk 10 kullanıcıyı getir
-    top_users = db.query(User).order_by(desc(User.current_streak)).limit(10).all()
+    top_users = db.query(User).order_by(desc(User.current_streak)).limit(9).all()
 
     result = []
     for index, u in enumerate(top_users):

@@ -31,14 +31,23 @@ class ReactionRequest(BaseModel):
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def react_to_todo(user: user_dependency, db:db_dependency, reaction_request: ReactionRequest):
-    #db aynı kullnaıcının aynı todoya tepki verip vermediğini konrtol ediyoruz
+    #db de aynı kullnaıcının aynı todoya tepki verip vermediğini konrtol ediyoruz
     existing_reaction =db.query(Reaction).filter(
         Reaction.user_id == user.get("id"),
         Reaction.todo_id == reaction_request.todo_id
     ).first()
-    if existing_reaction:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail ="Bu göreve zaten bir tepki verdiniz")
 
+    if existing_reaction:
+        # Eğer aynı tepki verilmişse, tepkiyi geri al (sil)
+        if existing_reaction.emoji_code == reaction_request.emoji_code:
+            db.delete(existing_reaction)
+            db.commit()
+            return {"message": "Tepki geri alındı", "action": "removed"}
+        
+        # Eğer farklı bir tepki verilmişse, emojiyi güncelle
+        existing_reaction.emoji_code = reaction_request.emoji_code
+        db.commit()
+        return {"message": "Tepki güncellendi", "action": "updated"}
 
     new_reaction = Reaction(
         emoji_code = reaction_request.emoji_code,
@@ -48,4 +57,4 @@ async def react_to_todo(user: user_dependency, db:db_dependency, reaction_reques
 
     db.add(new_reaction)
     db.commit()
-    return{"message": "Tepki başarıyla gönderildi"}
+    return{"message": "Tepki başarıyla gönderildi", "action": "created"}

@@ -87,7 +87,8 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
     user = authentication_user(form_data.username, form_data.password,db)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Kullanıcı adı veya şifre yanlış")
-    token= create_access_token(user.username, user.id, timedelta(minutes=60))
+    expires = timedelta(minutes=60)
+    token= create_access_token(user.username, user.id, expires)
     return {"access_token":token,"token_type":"bearer"}
 
 #kayıt işlemi için kullanılır
